@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "title_side.html" %}
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
+
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+    <title>强化学习训练过程</title>
+</head>
+
+
+
+{% block main_content %}
+<div class="metric_item" id="metric1">1</div>
+<div class="metric_item" id="metric2">2</div>
+<div class="metric_item" id="metric3">3</div>
+<div class="metric_item" id="metric4">4</div>
+<div class="metric_item" id="metric5">5</div>
+<div class="metric_item" id="metric6">6</div>
+<div class="metric_item" id="metric7">7</div>
+<div class="metric_item" id="metric8">8</div>
+<div class="metric_item" id="metric9">9</div>
+<div class="metric_item" id="metric10">10</div>
+<div class="metric_item" id="metric11">11</div>
+<div class="metric_item" id="metric12">12</div>
+<div class="metric_item" id="metric13">13</div>
+<div class="metric_item" id="metric14">14</div>
+<div class="metric_item" id="metric15">15</div>
+<div class="metric_item" id="metric16">16</div>
+
+
+<script>
+
+    $(
+
+        function () {
+            rl_reward();
+            setInterval(rl_reward_dynamicdata, 1000);
+            rl_tps();
+            setInterval(rl_tps_dynamicdata, 1000);
+            rl_ntl();
+            setInterval(rl_ntl_dynamicdata, 1000);
+            rl_c1();
+            setInterval(rl_c1_dynamicdata, 1000);
+            rl_c2();
+            setInterval(rl_c2_dynamicdata, 1000);
+            rl_c3();
+            setInterval(rl_c3_dynamicdata, 1000);
+            rl_c4();
+            setInterval(rl_c4_dynamicdata, 1000);
+            rl_c5();
+            setInterval(rl_c5_dynamicdata, 1000);
+            rl_c6();
+            setInterval(rl_c6_dynamicdata, 1000);
+            rl_c7();
+            setInterval(rl_c7_dynamicdata, 1000);
+            rl_c8();
+            setInterval(rl_c8_dynamicdata, 1000);
+        }
+    );
+
+    // reward的曲线
+    var reward_chart = echarts.init(document.getElementById('metric1'), 'white', {
+        renderer: 'canvas',    
+    }
+    );
+
+    var old_data_reward = [];
+
+    function rl_reward() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_reward',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                reward_chart.setOption(data);
+                old_data_reward = reward_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_reward_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_reward_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_reward.push([result.x_data, result.y_data]);
+                // console.log(old_data_reward)
+                reward_chart.setOption({
+                    series: [{ data: old_data_reward }]
+                });
+            }
+        });
+    }
+
+    // TPS的曲线
+    var tps_chart = echarts.init(document.getElementById('metric2'), 'white', {
+        renderer: 'canvas',
+    }
+    );
+
+    var old_data_tps = [];
+
+    function rl_tps() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_tps',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                tps_chart.setOption(data);
+                old_data_tps = tps_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_tps_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_tps_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tps.push([result.x_data, result.y_data]);
+                // console.log(old_data_tps)
+                tps_chart.setOption({
+                    series: [{ data: old_data_tps }]
+                });
+            }
+        });
+    }
+
+    // NTL
+    var ntl_chart = echarts.init(document.getElementById('metric3'), 'white', {
+        renderer: 'canvas',
+    }
+    );
+
+    var old_data_ntl = [];
+
+    function rl_ntl() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_ntl',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                ntl_chart.setOption(data);
+                old_data_ntl = ntl_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_ntl_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_tps_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_ntl.push([result.x_data, result.y_data]);
+                // console.log(old_data_ntl)
+                ntl_chart.setOption({
+                    series: [{ data: old_data_ntl }]
+                });
+            }
+        });
+    }
+
+
+    // C1的曲线
+    var c1_chart = echarts.init(document.getElementById('metric4'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c1 = [];
+
+    function rl_c1() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c1',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c1_chart.setOption(data);
+                old_data_c1 = c1_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c1_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c1_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c1.push([result.x_data, result.y_data]);
+                c1_chart.setOption({
+                    series: [{ data: old_data_c1 }]
+                });
+            }
+        });
+    }
+
+    // C2的曲线
+    var c2_chart = echarts.init(document.getElementById('metric5'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c2 = [];
+
+    function rl_c2() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c2',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c2_chart.setOption(data);
+                old_data_c2 = c2_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c2_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c2_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c2.push([result.x_data, result.y_data]);
+                c2_chart.setOption({
+                    series: [{ data: old_data_c2 }]
+                });
+            }
+        });
+    }
+
+    // C3的曲线
+    var c3_chart = echarts.init(document.getElementById('metric6'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c3 = [];
+
+    function rl_c3() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c3',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c3_chart.setOption(data);
+                old_data_c3 = c3_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c3_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c3_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c3.push([result.x_data, result.y_data]);
+                c3_chart.setOption({
+                    series: [{ data: old_data_c3 }]
+                });
+            }
+        });
+    }
+
+    // C4的曲线
+    var c4_chart = echarts.init(document.getElementById('metric7'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c4 = [];
+
+    function rl_c4() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c4',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c4_chart.setOption(data);
+                old_data_c4 = c4_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c4_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c4_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c4.push([result.x_data, result.y_data]);
+                c4_chart.setOption({
+                    series: [{ data: old_data_c4 }]
+                });
+            }
+        });
+    }
+
+    // C5的曲线
+    var c5_chart = echarts.init(document.getElementById('metric8'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c5 = [];
+
+    function rl_c5() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c5',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c5_chart.setOption(data);
+                old_data_c5 = c5_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c5_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c5_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c5.push([result.x_data, result.y_data]);
+                c5_chart.setOption({
+                    series: [{ data: old_data_c5 }]
+                });
+            }
+        });
+    }
+
+    // C6的曲线
+    var c6_chart = echarts.init(document.getElementById('metric9'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c6 = [];
+
+    function rl_c6() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c6',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c6_chart.setOption(data);
+                old_data_c6 = c6_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c6_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c6_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c6.push([result.x_data, result.y_data]);
+                c6_chart.setOption({
+                    series: [{ data: old_data_c6 }]
+                });
+            }
+        });
+    }
+
+    // C7的曲线
+    var c7_chart = echarts.init(document.getElementById('metric10'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c7 = [];
+
+    function rl_c7() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c7',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c7_chart.setOption(data);
+                old_data_c7 = c7_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c7_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c7_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c7.push([result.x_data, result.y_data]);
+                c7_chart.setOption({
+                    series: [{ data: old_data_c7 }]
+                });
+            }
+        });
+    }
+
+    // // C7的曲线
+    // var c7_chart = echarts.init(document.getElementById('metric10'), 'white', {
+    //     renderer: 'canvas',
+    // });
+
+    // var old_data_c7 = [];
+
+    // function rl_c7() {
+    //     $.ajax({
+    //         url: 'http://127.0.0.1:5000/rl_c7',
+    //         type: 'get',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             c7_chart.setOption(data);
+    //             old_data_c7 = c7_chart.getOption().series[0].data;
+    //         }
+    //     });
+    // }
+
+    // function rl_c7_dynamicdata() {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "http://127.0.0.1:5000/rl_c7_dynamicdata",
+    //         dataType: "json",
+    //         success: function (result) {
+    //             console.log(old_data_c7)
+    //             old_data_c7.push([result.x_data, result.y_data]);
+    //             c7_chart.setOption({
+    //                 series: [{ data: old_data_c7 }]
+    //             });
+    //         }
+    //     });
+    // }
+
+    // C8的曲线
+    var c8_chart = echarts.init(document.getElementById('metric11'), 'white', {
+        renderer: 'canvas',
+    });
+
+    var old_data_c8 = [];
+
+    function rl_c8() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/rl_c8',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                c8_chart.setOption(data);
+                old_data_c8 = c8_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function rl_c8_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/rl_c8_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_c8.push([result.x_data, result.y_data]);
+                c8_chart.setOption({
+                    series: [{ data: old_data_c8 }]
+                });
+            }
+        });
+    }
+
+
+
+
+</script>
+
+{% endblock main_content%}

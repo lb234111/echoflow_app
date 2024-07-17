@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "title_side.html" %}
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
+
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+    <title>2222区块链性能测量结果</title>
+</head>
+
+
+
+{% block main_content %}
+<div class="metric_item" id="metric1">1</div>
+<div class="metric_item" id="metric2">2</div>
+<div class="metric_item" id="metric3">3</div>
+<div class="metric_item" id="metric4">4</div>
+<div class="metric_item" id="metric5">5</div>
+<div class="metric_item" id="metric6">6</div>
+<div class="metric_item" id="metric7">7</div>
+<div class="metric_item" id="metric8">8</div>
+<div class="metric_item" id="metric9">9</div>
+<div class="metric_item" id="metric9">10</div>
+<div class="metric_item" id="metric9">11</div>
+<div class="metric_item" id="metric9">12</div>
+<div class="metric_item" id="metric9">13</div>
+<div class="metric_item" id="metric9">14</div>
+<div class="metric_item" id="metric9">15</div>
+<div class="metric_item" id="metric9">16</div>
+
+
+<script>
+
+    chart = echarts.init(document.getElementById('metric2'), 'white',
+        { renderer: 'canvas' }
+    );
+    var old_data = [];
+    // 检查本地存储中是否有第一次显示状态变量
+    // var isFirstDisplay = localStorage.getItem('isFirstDisplay') !== 'true';
+    // console.log('init localStorage isFirstDisplay:', isFirstDisplay)
+    // // 如果是第一次显示则动态更新+把状态变量设置为true
+    // if (isFirstDisplay) {
+    //     localStorage.setItem('isFirstDisplay', 'true');
+    //     console.log('if localStorage isFirstDisplay:', isFirstDisplay)
+
+    //     // 获取数据并设置定时器更新数据
+    //     entropy_fetchData();
+    //     setInterval(entropy_dynamicdata, 1000);
+    // } else {
+    //     console.log('else localStorage isFirstDisplay:', isFirstDisplay)
+
+    //     // 如果不是第一次显示，静态显示完整数据
+    //     getStaticData();
+    //     setInterval(entropy_dynamicdata, 1000);
+
+    // }
+
+    entropy_fetchData();
+    // setInterval(entropy_dynamicdata, 1000);
+
+
+    // Static Part
+    function getStaticData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/entropy_line_all",
+            dataType: "json",
+            success: function (result) {
+                chart.setOption(result);
+                old_data = chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    var isFirstClick = true
+    console.log('isFirstClick:', isFirstClick)
+
+    // Dynamic Part
+    function entropy_fetchData(isFirstClick) {
+        if (isFirstClick == true) {
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:5000/entropy",
+                dataType: "json",
+                success: function (result) {
+                    chart.setOption(result);
+                    old_data = chart.getOption().series[0].data;
+                }
+            });
+            console.log('isFirstClick:', isFirstClick)
+
+            isFirstClick = false
+        }
+        else {
+            getStaticData();
+            setInterval(entropy_dynamicdata, 1000);
+            console.log('isFirstClick:', isFirstClick)
+
+        }
+
+    }
+
+    function entropy_dynamicdata() {
+        console.log('isFirstClick:', isFirstClick)
+
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/entropy_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data.push([result.x_data, result.y_data]);
+                console.log('entropy: ', result.x_data, result.y_data)
+
+                chart.setOption({
+                    series: [{ data: old_data }]
+                });
+            }
+        });
+    }
+</script>
+
+{% endblock main_content%}

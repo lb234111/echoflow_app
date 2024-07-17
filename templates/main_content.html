@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "title_side.html" %}
+
+<head>
+
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
+
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+    <title>区块链性能测量结果</title>
+</head>
+
+{% block main_content %}
+<div class="metric_item" id="metric1">1</div>
+<div class="metric_item" id="metric2">2</div>
+<div class="metric_item" id="metric3">3</div>
+<div class="metric_item" id="metric4">4</div>
+<div class="metric_item" id="metric5">5</div>
+<div class="metric_item" id="metric6">6</div>
+<div class="metric_item" id="metric7">7</div>
+<div class="metric_item" id="metric8">8</div>
+<div class="metric_item" id="metric9">9</div>
+<div class="metric_item" id="metric10">10</div>
+<div class="metric_item" id="metric11">11</div>
+<div class="metric_item" id="metric12">12</div>
+<div class="metric_item" id="metric13">13</div>
+<div class="metric_item" id="metric14">14</div>
+<div class="metric_item" id="metric15">15</div>
+<div class="metric_item" id="metric16">16</div>
+
+
+
+<script>
+
+    $(
+        function () {
+            cpu_use_rate_fetchData();
+            setInterval(cpu_use_rate_dynamicdata, 500);
+            memory_use_rate_fetchData();
+            setInterval(memory_use_rate_dynamicdata, 500);
+
+        }
+    );
+
+
+
+    // ################################# cpu_use_rate的曲线 ############################
+    var cpu_chart = echarts.init(document.getElementById('metric1'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight  这种方法无法填充div两边的空白
+    }
+    );
+
+    var old_data_cpu_use_rate = [];
+
+    function cpu_use_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/cpu_use_rate",
+            dataType: "json",
+            success: function (result) {
+                cpu_chart.setOption(result);
+                old_data_cpu_use_rate = cpu_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function cpu_use_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/cpu_use_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_cpu_use_rate.push([result.x_data, result.y_data]);
+                // console.log('cpu: ', result.x_data, result.y_data)
+                cpu_chart.setOption({
+                    series: [{ data: old_data_cpu_use_rate }]
+                });
+            }
+        });
+    }
+
+
+
+    // ################################# memory_use_rate的曲线 ############################
+
+    var memory_chart = echarts.init(document.getElementById('metric2'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+
+    var old_data_memory_use_rate = [];
+
+    function memory_use_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/memory_use_rate",
+            dataType: "json",
+            success: function (result) {
+                memory_chart.setOption(result);
+                old_data_memory_use_rate = memory_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function memory_use_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/memory_use_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_memory_use_rate.push([result.x_data, result.y_data]);
+                memory_chart.setOption({
+                    series: [{ data: old_data_memory_use_rate }]
+                });
+            }
+        });
+    }
+
+</script>
+
+{% endblock main_content%}

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
+    <link rel="stylesheet" href="/resource/css/mobius.css" type="text/css" />
+    
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+    <title>基于离散事件模型的区块链模拟器</title>
+    <style>
+        body {
+            background-image: url('/resource/img/bg2.jpg')!important;
+            background-size: cover; /* 背景图覆盖整个页面 */
+            background-position: center center; /* 背景图居中 */
+            background-repeat: no-repeat; /* 防止背景图重复 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        } 
+        h1 {
+            font-size: 40px; /* 调整字体大小 */
+            color: #00BFFF; /* 设置字体颜色 */
+            text-align: center; /* 使文字居中 */
+            margin-top: 13px; /* 上边距，可根据需要调整 */
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>区块链模拟器</h1>
+    <div class="mobius_content">
+    <!-- Top Section -->
+    <div class="top-section">
+        <!-- Left Top: Dropdown Menus -->
+        <div class="left-top">
+            <div class="card">
+                <label for="dropdown1">网络算法：</label>
+                <select id="dropdown1">
+                    <option value="gossip">Gossip</option>
+                    <option value="kad">Kad</option>
+                </select>
+            </div>
+            <div class="card">
+                <label for="dropdown2">共识算法：</label>
+                <select id="dropdown2">
+                    <option value="TBFT">TBFT</option>
+                    <option value="PBFT">PBFT</option>
+                    <option value="HotStuff">HotStuff</option>
+                    <option value="POW">POW</option>
+                </select>
+            </div>
+            <div class="card">
+                <label for="input_value1">节点数量：</label>
+                <input type="number" id="input_value1" placeholder="5">
+            </div>
+            <div class="card">
+                <label for="input_value2">节点带宽(字节/秒)：</label>
+                <input type="number" id="input_value2" placeholder="2621440">    
+            </div>
+            <div class="card">
+                <label for="input_value5">区块大小(笔交易)：</label>
+                <input type="number" id="input_value5" placeholder="100">   
+            </div>
+            <div class="card">
+                <label for="input_value3">交易池大小(笔交易)：</label>
+                <input type="number" id="input_value3" placeholder="10000">    
+            </div>
+        </div>
+        
+        <!-- Right Top: Buttons -->
+        <div class="right-top">
+                <button id="submit_button1">修改参数</button>
+                <button id="run_button">模拟器运行</button>
+                <button id="cor_button">模拟器误差测试</button> 
+        </div>
+    </div>
+
+
+    <!-- Chart Section -->
+    <div class="chart-section">
+        <div id="mobius_metric2" class="chart" style="display: none;"></div>
+        <div id="mobius_metric3" class="chart" style="display: none;"></div>
+        <div id="mobius_metric4" class="chart" style="display: none;"></div>
+    </div>
+    <div class="chart-section">
+        <div id="mobius_metric5" class="chart2" style="display: none;"></div>
+    </div>    
+
+    </div>
+
+
+    <!-- <div class="mobius_content">
+        <div class="mobius_div1" id="mobius_metric1">
+            <div class="mobius_row">
+                <div>
+                    <label for="dropdown1">网络算法：</label>
+                    <select id="dropdown1">
+                        <option value="gossip">Gossip</option>
+                        <option value="kad">Kad</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="dropdown2">共识算法：</label>
+                    <select id="dropdown2">
+                        <option value="TBFT">TBFT</option>
+                        <option value="PBFT">PBFT</option>
+                        <option value="HotStuff">HotStuff</option>
+                        <option value="POW">POW</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mobius_row">
+                <div>
+                    <label for="input_value1">节点数量：</label>
+                    <input type="number" id="input_value1" placeholder="5">
+                </div>
+                <div>
+                    <label for="input_value2">节点带宽：</label>
+                    <input type="number" id="input_value2" placeholder="2621440">    
+                </div>
+            </div>
+
+            <div class="mobius_row">
+                <div>
+                    <label for="input_value5">区块大小：</label>
+                    <input type="number" id="input_value5" placeholder="100">   
+                </div>
+                <div>
+                    <label for="input_value3">交易池大小：</label>
+                    <input type="number" id="input_value3" placeholder="10000">    
+                </div>
+            </div>
+
+            <div class="mobius_row">
+                <div>
+                <label for="input_value9">交易数量：</label>
+                    <input type="number" id="input_value9" placeholder="5000">  
+                </div>
+                <div>
+                    <label for="input_value4">生成速率：</label>
+                    <input type="number" id="input_value4" placeholder="2000">   
+                </div>
+            </div>
+
+            <div class="mobius_row">
+                <div>
+                    <label for="input_value6">扇出大小：</label>
+                    <input type="number" id="input_value6" placeholder="3">
+                </div>
+                <div>
+                    <label for="input_value7">心跳间隔：</label>
+                    <input type="number" id="input_value7" placeholder="100(ms)">   
+                </div>
+                <div>
+                    <label for="input_value8">桶大小：</label>
+                    <input type="number" id="input_value8" placeholder="3">    
+                </div>           
+            </div>
+
+            <div class="mobius_row">
+                <div>
+                    <button id="submit_button1">修改参数</button>  
+                </div>
+                <div>
+                    <button id="run_button">运行</button>
+                </div>
+                <div>
+                    <button id="cor_button">对比</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobius_div2" id="mobius_metric2"> 2</div> 
+        <div class="mobius_div3" id="mobius_metric3"> 3</div>
+        <div class="mobius_div4" id="mobius_metric4"> 4</div>
+
+    </div> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdown = document.getElementById('dropdown1');
+            dropdown.addEventListener('change', function () {
+                const selectedValue = dropdown.value;
+                
+                fetch('/update_dropdown1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `dropdown1=${selectedValue}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('JSON file updated successfully');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdown = document.getElementById('dropdown2');
+            dropdown.addEventListener('change', function () {
+                const selectedValue = dropdown.value;
+                
+                fetch('/update_dropdown2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `dropdown2=${selectedValue}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('JSON file updated successfully');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const input1 = document.getElementById('input_value1');
+            const input2 = document.getElementById('input_value2');
+            const input3 = document.getElementById('input_value3');
+            //const input4 = document.getElementById('input_value4');
+            const input5 = document.getElementById('input_value5');
+            //const input6 = document.getElementById('input_value6');
+            //const input7 = document.getElementById('input_value7');
+            //const input8 = document.getElementById('input_value8');
+            //const input9 = document.getElementById('input_value9');
+
+            const button = document.getElementById('submit_button1');
+            
+            button.addEventListener('click', function () {
+                const inputValue1 = input1.value === '' ? '5' : input1.value;
+                const inputValue2 = input2.value === '' ? '2621440' : input2.value;
+                const inputValue3 = input3.value === '' ? '10000' : input3.value;
+                //const inputValue4 = input4.value === '' ? '2000' : input4.value;
+                const inputValue5 = input5.value === '' ? '100' : input5.value;
+                //const inputValue6 = input6.value === '' ? '3' : input6.value;
+                //const inputValue7 = input7.value === '' ? '100' : input7.value;
+                //const inputValue8 = input8.value === '' ? '3' : input8.value;
+                //const inputValue9 = input9.value === '' ? '5000' : input9.value;
+                const inputValue9='1000';
+                fetch('/update_value1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    //body: `node_num=${inputValue1}&bandwidth=${inputValue2}&tx_num=${inputValue9}&tx_pool_size=${inputValue3}&tx_rate=${inputValue4}&block_size=${inputValue5}&fan_out=${inputValue6}&heartbeat_interval=${inputValue7}&bucket_size=${inputValue8}`
+                    body: `node_num=${inputValue1}&bandwidth=${inputValue2}&tx_num=${inputValue9}&tx_pool_size=${inputValue3}&block_size=${inputValue5}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('JSON file updated successfully');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const button = document.getElementById('run_button');
+            
+            button.addEventListener('click', function () {
+                document.getElementById('mobius_metric2').style.display = 'block';
+                document.getElementById('mobius_metric3').style.display = 'none';
+                document.getElementById('mobius_metric4').style.display = 'block';
+                document.getElementById('mobius_metric5').style.display = 'none';
+                mb_run();
+                // fetch('/run', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/x-www-form-urlencoded'
+                //     }
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data.status === 'success') {
+                //         alert(`Run successfully. TPS: ${data.tps}`);
+                //     }
+                // })
+                // .catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const button = document.getElementById('cor_button');
+            let intervalId;
+            
+            button.addEventListener('click', function () {
+                let callCount = 0; 
+                const maxCalls = 50; 
+                document.getElementById('mobius_metric2').style.display = 'none';
+                document.getElementById('mobius_metric3').style.display = 'none';
+                document.getElementById('mobius_metric4').style.display = 'none';
+                document.getElementById('mobius_metric5').style.display = 'block';
+                intervalId = setInterval(function () {
+                    if (callCount < maxCalls) {
+                        mb_cor();
+                        //mb_cor2();
+                        callCount++; 
+                    } else {
+                        clearInterval(intervalId); 
+                        console.log("Stopped after reaching maximum calls.");
+                    }
+                }, 1000);
+            });
+        });
+
+        // tps的曲线
+        var tps_chart = echarts.init(document.getElementById('mobius_metric2'), 'white', {
+            renderer: 'canvas',    
+        }
+        );
+        var lat_chart = echarts.init(document.getElementById('mobius_metric3'), 'white', {
+            renderer: 'canvas',    
+        }
+        );
+        var avg_chart = echarts.init(document.getElementById('mobius_metric4'), 'white', {
+            renderer: 'canvas',    
+        }
+        );
+
+        var cor_chart = echarts.init(document.getElementById('mobius_metric5'), 'white', {
+            renderer: 'canvas',    
+        }
+        );
+
+        //let hasMbCorRun = false; 
+
+        function mb_run() {
+            // if (hasMbCorRun) {
+            //     tps_chart.clear();
+            //     lat_chart.clear();
+            //     avg_chart.clear();
+            //     hasMbCorRun = false; 
+            // }
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mb_run',
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    tps_chart.setOption(JSON.parse(data.tps));
+                    lat_chart.setOption(JSON.parse(data.lat));
+                    avg_chart.setOption(JSON.parse(data.avg));
+                }
+            });
+        }
+
+        function mb_cor() {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mb_cor',
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    cor_chart.setOption(data);
+                    //hasMbCorRun = true; 
+                }
+            });
+        }
+
+        function mb_cor2() {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/mb_cor2',
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    lat_chart.setOption(data);
+                }
+            });
+        }
+
+    </script>
+</body>
+
+
+

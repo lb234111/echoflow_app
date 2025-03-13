@@ -22,30 +22,81 @@ def next_xy(df,i,m,n):
 # 根据all_df的第0列和第n列的前2行数据，初始化一条line，
 def line_base(df,line_name,n):
     # print('rows data:',df.iloc[:,0])
+    # line = (
+    #     Line()
+    #     .add_xaxis(xaxis_data=df.iloc[:2,0][-5:].tolist())#第0列是时间
+    #     .add_yaxis(series_name=line_name,
+    #                y_axis=df.iloc[:2,n].tolist(),
+    #                is_smooth=True, 
+    #             #    markpoint_opts=opts.MarkPointOpts(data=[opts.MarkPointItem(type_="min"),opts.MarkPointItem(type_="max")]),
+    #                )
+    #     .set_global_opts(legend_opts=opts.LegendOpts(pos_left="10%",pos_top="10%"),
+    #                      xaxis_opts=(opts.AxisOpts(type_="value",name='迭代轮次',name_location='center',min_='dataMin',name_gap=25)),
+    #                      yaxis_opts=(opts.AxisOpts(type_="value",min_='dataMin')))
+    #     .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+    # )
     line = (
         Line()
-        .add_xaxis(xaxis_data=df.iloc[:2,0][-5:].tolist())#第0列是时间
+        .add_xaxis(xaxis_data=df.iloc[:2,0][-5:].tolist())  # 第0列是时间
         .add_yaxis(series_name=line_name,
-                   y_axis=df.iloc[:2,n].tolist(),
-                   is_smooth=True, 
-                #    markpoint_opts=opts.MarkPointOpts(data=[opts.MarkPointItem(type_="min"),opts.MarkPointItem(type_="max")]),
-                   )
-        .set_global_opts(legend_opts=opts.LegendOpts(pos_left="10%",pos_top="10%"),
-                         xaxis_opts=(opts.AxisOpts(type_="value",name='迭代轮次',name_location='center',min_='dataMin',name_gap=25)),
-                         yaxis_opts=(opts.AxisOpts(type_="value",min_='dataMin')))
-        .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+                y_axis=df.iloc[:2,n].tolist(),
+                is_smooth=True,
+                # markpoint_opts=opts.MarkPointOpts(data=[opts.MarkPointItem(type_="min"),opts.MarkPointItem(type_="max")]),
+                )
+        .set_global_opts(
+            legend_opts=opts.LegendOpts(
+                pos_left="10%", 
+                pos_top="10%",
+                textstyle_opts=opts.TextStyleOpts(
+                    color="#FFFFFF",   
+                    font_size=14,     
+                    font_weight="bold"  
+                )
+            ),
+            xaxis_opts=opts.AxisOpts(
+                type_="value",
+                name='迭代轮次',
+                name_location='center',
+                min_='dataMin',
+                name_gap=25,
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(color="#FFFFFF", width=3)   
+                )
+            ),
+            yaxis_opts=opts.AxisOpts(
+                type_="value",
+                min_='dataMin',
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(color="#FFFFFF", width=3)  
+                )
+            )
+        )
+        .set_series_opts(
+            label_opts=opts.LabelOpts(is_show=False),
+            linestyle_opts=opts.LineStyleOpts(
+                color="#32CD32",  # 设置折线颜色为绿色
+                width=3         
+            )
+        )
     )
+
     return line
+
+
+
 
 display_df = pd.read_csv('files/echoflow.csv',header=None)
 
+tps_idx=1
+
 ### tps
 @bp.route("/ef_tps")
-def ef_tps():   
-    reward_l = line_base(display_df,'Tps',1) #第2列是tps的值
+def ef_tps(): 
+    global tps_idx 
+    tps_idx = 1  
+    reward_l = line_base(display_df,'交易吞吐量 Tps',1) #第2列是tps的值
     return reward_l.dump_options_with_quotes()
 
-tps_idx=1
 @bp.route('/ef_tps_dynamicdata')
 def ef_tps_dynamicdata():
     global tps_idx
@@ -57,12 +108,14 @@ def ef_tps_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### BatchCreateTimeout
+BatchCreateTimeout_idx=1
 @bp.route("/ef_BatchCreateTimeout")
-def ef_BatchCreateTimeout():   
-    reward_l = line_base(display_df,'BatchCreateTimeout',2) 
+def ef_BatchCreateTimeout():
+    global BatchCreateTimeout_idx 
+    BatchCreateTimeout_idx = 1    
+    reward_l = line_base(display_df,'批次创建时间 BatchCreateTimeout (网络层)',2) 
     return reward_l.dump_options_with_quotes()
 
-BatchCreateTimeout_idx=1
 @bp.route('/ef_BatchCreateTimeout_dynamicdata')
 def ef_BatchCreateTimeout_dynamicdata():
     global BatchCreateTimeout_idx
@@ -74,12 +127,14 @@ def ef_BatchCreateTimeout_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### BatchMaxSize
+BatchMaxSize_idx=1
 @bp.route("/ef_BatchMaxSize")
 def ef_BatchMaxSize():   
-    reward_l = line_base(display_df,'BatchMaxSize',3) 
+    global BatchMaxSize_idx 
+    BatchMaxSize_idx = 1  
+    reward_l = line_base(display_df,'批次大小 BatchMaxSize (网络层)',3) 
     return reward_l.dump_options_with_quotes()
 
-BatchMaxSize_idx=1
 @bp.route('/ef_BatchMaxSize_dynamicdata')
 def ef_BatchMaxSize_dynamicdata():
     global BatchMaxSize_idx
@@ -91,12 +146,14 @@ def ef_BatchMaxSize_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### Connectors
+Connectors_idx=1
 @bp.route("/ef_Connectors")
-def ef_Connectors():   
-    reward_l = line_base(display_df,'Connectors',4) 
+def ef_Connectors(): 
+    global Connectors_idx 
+    Connectors_idx = 1   
+    reward_l = line_base(display_df,'活跃连接数 Connectors (网络层)',4) 
     return reward_l.dump_options_with_quotes()
 
-Connectors_idx=1
 @bp.route('/ef_Connectors_dynamicdata')
 def ef_Connectors_dynamicdata():
     global Connectors_idx
@@ -108,12 +165,14 @@ def ef_Connectors_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### GossipRetransmission
+GossipRetransmission_idx=1
 @bp.route("/ef_GossipRetransmission")
-def ef_GossipRetransmission():   
-    reward_l = line_base(display_df,'GossipRetransmission',7) 
+def ef_GossipRetransmission():  
+    global GossipRetransmission_idx 
+    GossipRetransmission_idx = 1   
+    reward_l = line_base(display_df,'消息重传次数 GossipRetransmission (网络层)',7) 
     return reward_l.dump_options_with_quotes()
 
-GossipRetransmission_idx=1
 @bp.route('/ef_GossipRetransmission_dynamicdata')
 def ef_GossipRetransmission_dynamicdata():
     global GossipRetransmission_idx
@@ -125,12 +184,14 @@ def ef_GossipRetransmission_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### HeartbeatInterval
+HeartbeatInterval_idx=1
 @bp.route("/ef_HeartbeatInterval")
-def ef_HeartbeatInterval():   
-    reward_l = line_base(display_df,'HeartbeatInterval',8) 
+def ef_HeartbeatInterval():  
+    global HeartbeatInterval_idx 
+    HeartbeatInterval_idx = 1 
+    reward_l = line_base(display_df,'心跳间隔 HeartbeatInterval (网络层)',8) 
     return reward_l.dump_options_with_quotes()
 
-HeartbeatInterval_idx=1
 @bp.route('/ef_HeartbeatInterval_dynamicdata')
 def ef_HeartbeatInterval_dynamicdata():
     global HeartbeatInterval_idx
@@ -142,12 +203,14 @@ def ef_HeartbeatInterval_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### MaxPeerCountAllow
+MaxPeerCountAllow_idx=1
 @bp.route("/ef_MaxPeerCountAllow")
-def ef_MaxPeerCountAllow():   
-    reward_l = line_base(display_df,'MaxPeerCountAllow',9) 
+def ef_MaxPeerCountAllow(): 
+    global MaxPeerCountAllow_idx 
+    MaxPeerCountAllow_idx = 1 
+    reward_l = line_base(display_df,'最大邻居节点数 MaxPeerCountAllow (网络层)',9) 
     return reward_l.dump_options_with_quotes()
 
-MaxPeerCountAllow_idx=1
 @bp.route('/ef_MaxPeerCountAllow_dynamicdata')
 def ef_MaxPeerCountAllow_dynamicdata():
     global MaxPeerCountAllow_idx
@@ -159,12 +222,14 @@ def ef_MaxPeerCountAllow_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### OpportunisticGraftPeers
+OpportunisticGraftPeers_idx=1
 @bp.route("/ef_OpportunisticGraftPeers")
-def ef_OpportunisticGraftPeers():   
-    reward_l = line_base(display_df,'OpportunisticGraftPeers',10) 
+def ef_OpportunisticGraftPeers(): 
+    global OpportunisticGraftPeers_idx 
+    OpportunisticGraftPeers_idx = 1  
+    reward_l = line_base(display_df,'提议者提出区块数 OpportunisticGraftPeers (网络层)',10) 
     return reward_l.dump_options_with_quotes()
 
-OpportunisticGraftPeers_idx=1
 @bp.route('/ef_OpportunisticGraftPeers_dynamicdata')
 def ef_OpportunisticGraftPeers_dynamicdata():
     global OpportunisticGraftPeers_idx
@@ -176,12 +241,14 @@ def ef_OpportunisticGraftPeers_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### TBFT_propose_delta_timeout
+TBFT_propose_delta_timeout_idx=1
 @bp.route("/ef_TBFT_propose_delta_timeout")
 def ef_TBFT_propose_delta_timeout():   
-    reward_l = line_base(display_df,'TBFT_propose_delta_timeout',11) 
+    global TBFT_propose_delta_timeout_idx 
+    TBFT_propose_delta_timeout_idx = 1 
+    reward_l = line_base(display_df,'propose超时调整值 TBFT_propose_delta_timeout (共识层)',11) 
     return reward_l.dump_options_with_quotes()
 
-TBFT_propose_delta_timeout_idx=1
 @bp.route('/ef_TBFT_propose_delta_timeout_dynamicdata')
 def ef_TBFT_propose_delta_timeout_dynamicdata():
     global TBFT_propose_delta_timeout_idx
@@ -193,12 +260,14 @@ def ef_TBFT_propose_delta_timeout_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### TBFT_propose_timeout
+TBFT_propose_timeout_idx=1
 @bp.route("/ef_TBFT_propose_timeout")
-def ef_TBFT_propose_timeout():   
-    reward_l = line_base(display_df,'TBFT_propose_timeout',12) 
+def ef_TBFT_propose_timeout():
+    global TBFT_propose_timeout_idx 
+    TBFT_propose_timeout_idx = 1    
+    reward_l = line_base(display_df,'propose超时时间 TBFT_propose_timeout (共识层)',12) 
     return reward_l.dump_options_with_quotes()
 
-TBFT_propose_timeout_idx=1
 @bp.route('/ef_TBFT_propose_timeout_dynamicdata')
 def ef_TBFT_propose_timeout_dynamicdata():
     global TBFT_propose_timeout_idx
@@ -210,12 +279,14 @@ def ef_TBFT_propose_timeout_dynamicdata():
         return jsonify({"x_data": x, "y_data": y})
 
 ### block_tx_capacity
+block_tx_capacity_idx=1
 @bp.route("/ef_block_tx_capacity")
-def ef_block_tx_capacity():   
-    reward_l = line_base(display_df,'block_tx_capacity',13) 
+def ef_block_tx_capacity(): 
+    global block_tx_capacity_idx 
+    block_tx_capacity_idx = 1   
+    reward_l = line_base(display_df,'区块大小 block_tx_capacity (存储层)',13) 
     return reward_l.dump_options_with_quotes()
 
-block_tx_capacity_idx=1
 @bp.route('/ef_block_tx_capacity_dynamicdata')
 def ef_block_tx_capacity_dynamicdata():
     global block_tx_capacity_idx

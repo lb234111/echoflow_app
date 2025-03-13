@@ -1,0 +1,89 @@
+@charset "utf-8";
+
+.mobius_content {
+    display: flex;
+    flex-direction: column;
+    height: 88vh; 
+    padding: 20px;
+    width: 100vh; /* 设置固定宽度，例如 600px */
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.left-top {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-section {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.right-top {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.chart-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background-color: #41a1f0;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+input[type="number"] {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #01a7df;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.chart {
+    width: 800px; 
+    height: 650px; 
+    background-color: #1894f9; /* 图表的背景色 */
+    border-radius: 5px;
+}
+
+.chart2 {
+    width: 1200px; 
+    height: 800px; 
+    background-color: #1894f9; /* 图表的背景色 */
+    border-radius: 5px;
+}

@@ -21,6 +21,14 @@ app.register_blueprint(a_rl.bp)
 import app_ef as a_ef
 app.register_blueprint(a_ef.bp)
 
+# 模拟器
+import app_mb as a_mb
+app.register_blueprint(a_mb.bp)
+
+# 1000分片
+import app_ms as a_ms
+app.register_blueprint(a_ms.bp)
+
 
 
 @app.route("/")

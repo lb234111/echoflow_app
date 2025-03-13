@@ -21,8 +21,6 @@
 
 }
 
-
-
 .layout {
     width: 100vw;
     height: 100vh;
@@ -56,7 +54,6 @@
 
 #content {
     grid-area: content;
-    background: none;
     width: 87vw;
     height: 95vh;
 
@@ -67,23 +64,45 @@
 
 .echoflow_content {
     grid-area: content;
-    background: none;
-    border: 1px solid hsl(0, 0%, 80%);
-    width: 87vw;
-    height: 95vh;
+    width: 100vw;
+    height: 88vh;
     display: grid;
     grid-template-rows: repeat(5, 1fr);
     grid-template-columns: repeat(5, 1fr);
     }
     
-.echoflow_div1 { grid-area: 2 / 1 / 5 / 4; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div2 { grid-area: 1 / 4 / 2 / 5; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div3 { grid-area: 1 / 5 / 2 / 6; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div4 { grid-area: 2 / 4 / 3 / 5; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div5 { grid-area: 2 / 5 / 3 / 6; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div6 { grid-area: 3 / 4 / 4 / 5; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div7 { grid-area: 3 / 5 / 4 / 6; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div8 { grid-area: 4 / 4 / 5 / 5; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div9 { grid-area: 4 / 5 / 5 / 6; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div10 { grid-area: 5 / 4 / 6 / 5; border: 1px solid hsl(0, 0%, 80%);}
-.echoflow_div11 { grid-area: 5 / 5 / 6 / 6; border: 1px solid hsl(0, 0%, 80%);}
+.echoflow_div1 { grid-area: 2 / 1 / 5 / 4; border: 2px solid #0099cc;}
+.echoflow_div2 { grid-area: 1 / 4 / 2 / 5; border: 2px solid #0099cc;}
+.echoflow_div3 { grid-area: 1 / 5 / 2 / 6; border: 2px solid #0099cc;}
+.echoflow_div4 { grid-area: 2 / 4 / 3 / 5; border: 2px solid #0099cc;}
+.echoflow_div5 { grid-area: 2 / 5 / 3 / 6; border: 2px solid #0099cc;}
+.echoflow_div6 { grid-area: 3 / 4 / 4 / 5; border: 2px solid #0099cc;}
+.echoflow_div7 { grid-area: 3 / 5 / 4 / 6; border: 2px solid #0099cc;}
+.echoflow_div8 { grid-area: 4 / 4 / 5 / 5; border: 2px solid #0099cc;}
+.echoflow_div9 { grid-area: 4 / 5 / 5 / 6; border: 2px solid #0099cc;}
+.echoflow_div10 { grid-area: 5 / 4 / 6 / 5; border: 2px solid #0099cc;}
+.echoflow_div11 { grid-area: 5 / 5 / 6 / 6; border: 2px solid #0099cc;}
+
+.mitosis_content {
+    grid-area: content;
+    border: 1px solid #0099cc;
+    width: 98vw;
+    height: 88vh;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    }
+
+.mitosis_div1 { grid-area: 1 / 1 / 2 / 2; border: 2px solid #0099cc;}
+.mitosis_div5 { grid-area: 1 / 2 / 2 / 4; border: 2px solid #0099cc;
+                overflow: hidden; 
+                background-size: cover; 
+                background-position: center;
+                background-repeat: no-repeat; 
+                background-size: 600px 480px;}
+.mitosis_div2 { grid-area: 2 / 1 / 2 / 2; border: 2px solid #0099cc;}
+.mitosis_div3 { grid-area: 2 / 2 / 2 / 3; border: 2px solid #0099cc;}
+.mitosis_div4 { grid-area: 2 / 3 / 3 / 4; border: 2px solid #0099cc;}
+
+
+

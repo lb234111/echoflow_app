@@ -6,14 +6,15 @@
     <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
     <link rel="stylesheet" href="/resource/css/mobius.css" type="text/css" />
     
-    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
     <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
 
 
     <title>基于离散事件模型的区块链模拟器</title>
     <style>
         body {
-            background-image: url('/resource/img/bg2.jpg')!important;
+            background-image: url('/resource/img/bg3.png')!important;
             background-size: cover; /* 背景图覆盖整个页面 */
             background-position: center center; /* 背景图居中 */
             background-repeat: no-repeat; /* 防止背景图重复 */
@@ -23,11 +24,23 @@
             flex-direction: column;
         } 
         h1 {
-            font-size: 40px; /* 调整字体大小 */
+            font-size: 3vh; /* 调整字体大小 */
             color: #00BFFF; /* 设置字体颜色 */
             text-align: center; /* 使文字居中 */
-            margin-top: 13px; /* 上边距，可根据需要调整 */
+            margin-top: 1vh; /* 上边距，可根据需要调整 */
         }
+        #mobius_text {
+            color: #fefefe; 
+            font-size: 2.2vh; 
+            display: none; 
+            text-align: center;
+            line-height: 1.5;
+        }
+        .blue-text {
+            color: #00BFFF;
+            margin-right: 10px;
+        }
+
     </style>
 
 </head>
@@ -60,15 +73,15 @@
                 <input type="number" id="input_value1" placeholder="5">
             </div>
             <div class="card">
-                <label for="input_value2">节点带宽(字节/秒)：</label>
-                <input type="number" id="input_value2" placeholder="2621440">    
+                <label for="input_value2">节点带宽<br>(兆字节/秒)：</label>
+                <input type="number" id="input_value2" placeholder="20">    
             </div>
             <div class="card">
-                <label for="input_value5">区块大小(笔交易)：</label>
+                <label for="input_value5">区块大小<br>(笔交易)：</label>
                 <input type="number" id="input_value5" placeholder="100">   
             </div>
             <div class="card">
-                <label for="input_value3">交易池大小(笔交易)：</label>
+                <label for="input_value3">交易池大小<br>(笔交易)：</label>
                 <input type="number" id="input_value3" placeholder="10000">    
             </div>
         </div>
@@ -77,20 +90,35 @@
         <div class="right-top">
                 <button id="submit_button1">修改参数</button>
                 <button id="run_button">模拟器运行</button>
-                <button id="cor_button">模拟器误差测试</button> 
+                <button id="cor_button">误差测试</button> 
         </div>
     </div>
 
 
     <!-- Chart Section -->
-    <div class="chart-section">
+    <div class="chart-section1">
         <div id="mobius_metric2" class="chart" style="display: none;"></div>
         <div id="mobius_metric3" class="chart" style="display: none;"></div>
         <div id="mobius_metric4" class="chart" style="display: none;"></div>
     </div>
-    <div class="chart-section">
-        <div id="mobius_metric5" class="chart2" style="display: none;"></div>
-    </div>    
+    <div class="chart-section2">
+        <div id="mobius_text">
+            模拟器参数: 
+            节点数:<span class="blue-text">5</span>  
+            交易池大小:<span class="blue-text">10000</span>  
+            带宽:<span class="blue-text">25MB/s</span>  
+            交易数量:<span class="blue-text">5000</span>  
+            区块大小:<span class="blue-text">100</span>  
+            网络协议:<span class="blue-text">gossip</span>  
+            共识算法:<span class="blue-text">TBFT</span>
+        </div>
+        
+        <div class="chart-container">
+            <div id="mobius_metric5" class="chart2" style="display: none;"></div>
+            <div id="mobius_metric6" class="chart2" style="display: none;"></div>
+        </div>
+    </div>
+       
 
     </div>
 
@@ -243,7 +271,7 @@
             
             button.addEventListener('click', function () {
                 const inputValue1 = input1.value === '' ? '5' : input1.value;
-                const inputValue2 = input2.value === '' ? '2621440' : input2.value;
+                const inputValue2 = input2.value === '' ? '20' : input2.value;
                 const inputValue3 = input3.value === '' ? '10000' : input3.value;
                 //const inputValue4 = input4.value === '' ? '2000' : input4.value;
                 const inputValue5 = input5.value === '' ? '100' : input5.value;
@@ -251,7 +279,36 @@
                 //const inputValue7 = input7.value === '' ? '100' : input7.value;
                 //const inputValue8 = input8.value === '' ? '3' : input8.value;
                 //const inputValue9 = input9.value === '' ? '5000' : input9.value;
-                const inputValue9='1000';
+                const inputValue9='2000';
+                
+                const limits = {
+                    input_value1: 10,       // 上限：10
+                    input_value2: 50,        // 上限：50
+                    input_value3: 20000,    // 上限：20000
+                    input_value5: 1000      // 上限：1000
+                };
+
+                const inputs = [
+                    { id: 'input_value1', val: Number(inputValue1) },
+                    { id: 'input_value2', val: Number(inputValue2) },
+                    { id: 'input_value3', val: Number(inputValue3) },
+                    { id: 'input_value5', val: Number(inputValue5) }
+                ];
+
+                const nameMap = {
+                    input_value1: '节点数量',
+                    input_value2: '带宽',
+                    input_value3: '区块大小',
+                    input_value5: '交易池大小'
+                };
+
+                const exceeded = inputs.find(({ id, val }) => isNaN(val) || val > limits[id]);
+
+                if (exceeded) {
+                    alert(`输入超出限制：${nameMap[exceeded.id]} 为 ${exceeded.val}，最大为 ${limits[exceeded.id]}`);
+                    return; 
+                }
+
                 fetch('/update_value1', {
                     method: 'POST',
                     headers: {
@@ -278,6 +335,8 @@
                 document.getElementById('mobius_metric3').style.display = 'none';
                 document.getElementById('mobius_metric4').style.display = 'block';
                 document.getElementById('mobius_metric5').style.display = 'none';
+                document.getElementById('mobius_metric6').style.display = 'none';
+                document.getElementById('mobius_text').style.display = 'none';
                 mb_run();
                 // fetch('/run', {
                 //     method: 'POST',
@@ -294,28 +353,31 @@
                 // .catch(error => console.error('Error:', error));
             });
         });
-
+        let callCount = 0; 
+        
         document.addEventListener('DOMContentLoaded', function () {
             const button = document.getElementById('cor_button');
             let intervalId;
             
             button.addEventListener('click', function () {
-                let callCount = 0; 
+                
                 const maxCalls = 50; 
                 document.getElementById('mobius_metric2').style.display = 'none';
                 document.getElementById('mobius_metric3').style.display = 'none';
                 document.getElementById('mobius_metric4').style.display = 'none';
                 document.getElementById('mobius_metric5').style.display = 'block';
+                document.getElementById('mobius_metric6').style.display = 'block';
+                document.getElementById('mobius_text').style.display = 'block';
                 intervalId = setInterval(function () {
                     if (callCount < maxCalls) {
                         mb_cor();
-                        //mb_cor2();
+                        mb_cor2();
                         callCount++; 
                     } else {
                         clearInterval(intervalId); 
                         console.log("Stopped after reaching maximum calls.");
                     }
-                }, 1000);
+                }, 2000);
             });
         });
 
@@ -338,6 +400,11 @@
         }
         );
 
+        var cor_chart2 = echarts.init(document.getElementById('mobius_metric6'), 'white', {
+            renderer: 'canvas',    
+        }
+        );
+
         //let hasMbCorRun = false; 
 
         function mb_run() {
@@ -348,7 +415,7 @@
             //     hasMbCorRun = false; 
             // }
             $.ajax({
-                url: 'http://127.0.0.1:5000/mb_run',
+                url: 'http://120.53.88.243:5001/mb_run',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
@@ -361,7 +428,7 @@
 
         function mb_cor() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/mb_cor',
+                url: 'http://120.53.88.243:5001/mb_cor',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
@@ -373,11 +440,11 @@
 
         function mb_cor2() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/mb_cor2',
+                url: 'http://120.53.88.243:5001/mb_cor2',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
-                    lat_chart.setOption(data);
+                    cor_chart2.setOption(data);
                 }
             });
         }

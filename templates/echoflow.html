@@ -5,31 +5,66 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
 
-    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
 
 
     <title>区块链性能框架展示</title>
     <style>
         body {
-            background-image: url('/resource/img/bg2.jpg')!important;
+            background-image: url('/resource/img/bg3.png')!important;
             background-size: cover; /* 背景图覆盖整个页面 */
             background-position: center center; /* 背景图居中 */
             background-repeat: no-repeat; /* 防止背景图重复 */
         } 
-        h1 {
-            font-size: 40px; /* 调整字体大小 */
-            color: #00BFFF; /* 设置字体颜色 */
-            text-align: center; /* 使文字居中 */
-            margin-top: 13px; /* 上边距，可根据需要调整 */
+        .text1 {
+            font-size: 4vh; 
+            color: #00BFFF; 
+            width: 100%; 
+            text-align: center;
+            align-self: flex-end;
         }
+        .text2 {
+            font-size: 3vh; 
+            color: #ffffff; 
+            width: 100%; 
+            text-align: center;
+            align-self: flex-end;
+        }
+        .echoflow_div0 {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end; 
+            justify-content: center; 
+            color: white; 
+            font-size: 15px; 
+            height: 90%; 
+            padding-bottom: 15px; 
+            
+        }
+        .blue-text {
+            color: #00BFFF;
+            margin-right: 10px;
+        }
+
     </style>
     
 </head>
 
 <body>
-    <h1>性能边界</h1>
+    
     <div class="echoflow_content">
+        <div class="echoflow_div0" id="echoflow_metric0"> 
+            <div class="text1">区块链性能边界构建</div> 
+            <div class="text2">
+                节点数:<span class="blue-text">4</span>
+                共识类型:<span class="blue-text">TBFT</span>
+                
+            </div>     
+        </div> 
+        
         <div class="echoflow_div1" id="echoflow_metric1"> 1</div>
         <div class="echoflow_div2" id="echoflow_metric2"> 2</div>
         <div class="echoflow_div3" id="echoflow_metric3"> 3</div>
@@ -48,36 +83,59 @@
         $(
 
             function () {
+                var time = 2000
                 ef_tps();
-                setInterval(ef_tps_dynamicdata, 1000);
+                //setInterval(ef_tps_dynamicdata, time);
                 ef_BatchCreateTimeout();
-                setInterval(ef_BatchCreateTimeout_dynamicdata, 1000);
+                //setInterval(ef_BatchCreateTimeout_dynamicdata, time);
                 ef_BatchMaxSize();
-                setInterval(ef_BatchMaxSize_dynamicdata, 1000);
+                //setInterval(ef_BatchMaxSize_dynamicdata, time);
                 ef_Connectors();
-                setInterval(ef_Connectors_dynamicdata, 1000);
+                //setInterval(ef_Connectors_dynamicdata, time);
                 ef_GossipRetransmission();
-                setInterval(ef_GossipRetransmission_dynamicdata, 1000);
+                //setInterval(ef_GossipRetransmission_dynamicdata, time);
                 ef_HeartbeatInterval();
-                setInterval(ef_HeartbeatInterval_dynamicdata, 1000);
+                //setInterval(ef_HeartbeatInterval_dynamicdata, time);
                 ef_MaxPeerCountAllow();
-                setInterval(ef_MaxPeerCountAllow_dynamicdata, 1000);
+                //setInterval(ef_MaxPeerCountAllow_dynamicdata, time);
                 ef_OpportunisticGraftPeers();
-                setInterval(ef_OpportunisticGraftPeers_dynamicdata, 1000);
+                //setInterval(ef_OpportunisticGraftPeers_dynamicdata, time);
                 ef_TBFT_propose_delta_timeout();
-                setInterval(ef_TBFT_propose_delta_timeout_dynamicdata, 1000);
+                //setInterval(ef_TBFT_propose_delta_timeout_dynamicdata, time);
                 ef_TBFT_propose_timeout();
-                setInterval(ef_TBFT_propose_timeout_dynamicdata, 1000);
+                //setInterval(ef_TBFT_propose_timeout_dynamicdata, time);
                 ef_block_tx_capacity();
-                setInterval(ef_block_tx_capacity_dynamicdata, 1000);
+                //setInterval(ef_block_tx_capacity_dynamicdata, time);
+                dynamicInterval();
             }
         );
+
+        let count = 0;
+        function dynamicInterval() {
+            let time = count < 5 ? 10 : 2000; // 前 5 次 500ms，之后 2000ms
+            setTimeout(() => {
+                ef_tps_dynamicdata();
+                ef_BatchCreateTimeout_dynamicdata();
+                ef_BatchMaxSize_dynamicdata();
+                ef_Connectors_dynamicdata();
+                ef_GossipRetransmission_dynamicdata();
+                ef_HeartbeatInterval_dynamicdata();
+                ef_MaxPeerCountAllow_dynamicdata();
+                ef_OpportunisticGraftPeers_dynamicdata();
+                ef_TBFT_propose_delta_timeout_dynamicdata();
+                ef_TBFT_propose_timeout_dynamicdata();
+                ef_block_tx_capacity_dynamicdata();
+                count++;
+                dynamicInterval(); // 递归调用，实现动态间隔
+            }, time);
+        }
 
         // tps的曲线
         var tps_chart = echarts.init(document.getElementById('echoflow_metric1'), 'white', {
             renderer: 'canvas',    
         }
         );
+        
 
         //BatchCreateTimeout的曲线
         var BatchCreateTimeout_chart = echarts.init(document.getElementById('echoflow_metric2'), 'white', {
@@ -138,19 +196,19 @@
             renderer: 'canvas',    
         }
         );
+        //var old_data_tps = [];
 
-        var old_data_tps = [];
 
         function ef_tps() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_tps',
+                url: 'http://120.53.88.243:5001/ef_tps',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     tps_chart.setOption(
                         data 
                     );
-                    old_data_tps = tps_chart.getOption().series[0].data;
+                    //old_data_tps = tps_chart.getOption().series[0].data;
                 }
             });
         }
@@ -158,19 +216,11 @@
         function ef_tps_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_tps_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_tps_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_tps.push([result.x_data, result.y_data]);
-                    // console.log(old_data_tps)
-                    // tps_chart.setOption({
-                    //     title: {
-                    //         text: '交易吞吐量 Tps 变化',
-                    //         subtext: '随着右边参数更新',
-                    //         left: 'center'
-                    //     },
-                    //     series: [{ data: old_data_tps }]
-                    // });
+                    //old_data_tps.push([result.x_data, result.y_data]);
+                    
                     tps_chart.setOption({
                         title: {
                             text: '交易吞吐量 Tps 变化',
@@ -187,23 +237,23 @@
                             }
                         },
                         series: [{
-                            data: old_data_tps
+                            data: result.data
                         }]
                     });
                 }
             });
         }
 
-        var old_data_BatchCreateTimeout = [];
+        //var old_data_BatchCreateTimeout = [];
 
         function ef_BatchCreateTimeout() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_BatchCreateTimeout',
+                url: 'http://120.53.88.243:5001/ef_BatchCreateTimeout',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     BatchCreateTimeout_chart.setOption(data);
-                    old_data_BatchCreateTimeout = BatchCreateTimeout_chart.getOption().series[0].data;
+                    //old_data_BatchCreateTimeout = BatchCreateTimeout_chart.getOption().series[0].data;
                 }
             });
         }
@@ -211,27 +261,27 @@
         function ef_BatchCreateTimeout_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_BatchCreateTimeout_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_BatchCreateTimeout_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_BatchCreateTimeout.push([result.x_data, result.y_data]);
+                    //old_data_BatchCreateTimeout.push([result.x_data, result.y_data]);
                     BatchCreateTimeout_chart.setOption({
-                        series: [{ data: old_data_BatchCreateTimeout }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_BatchMaxSize = [];
+        //var old_data_BatchMaxSize = [];
 
         function ef_BatchMaxSize() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_BatchMaxSize',
+                url: 'http://120.53.88.243:5001/ef_BatchMaxSize',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     BatchMaxSize_chart.setOption(data);
-                    old_data_BatchMaxSize = BatchMaxSize_chart.getOption().series[0].data;
+                    //old_data_BatchMaxSize = BatchMaxSize_chart.getOption().series[0].data;
                 }
             });
         }
@@ -239,27 +289,27 @@
         function ef_BatchMaxSize_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_BatchMaxSize_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_BatchMaxSize_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_BatchMaxSize.push([result.x_data, result.y_data]);
+                    //old_data_BatchMaxSize.push([result.x_data, result.y_data]);
                     BatchMaxSize_chart.setOption({
-                        series: [{ data: old_data_BatchMaxSize }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_Connectors = [];
+        //var old_data_Connectors = [];
 
         function ef_Connectors() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_Connectors',
+                url: 'http://120.53.88.243:5001/ef_Connectors',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     Connectors_chart.setOption(data);
-                    old_data_Connectors = Connectors_chart.getOption().series[0].data;
+                    //old_data_Connectors = Connectors_chart.getOption().series[0].data;
                 }
             });
         }
@@ -267,27 +317,27 @@
         function ef_Connectors_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_Connectors_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_Connectors_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_Connectors.push([result.x_data, result.y_data]);
+                    //old_data_Connectors.push([result.x_data, result.y_data]);
                     Connectors_chart.setOption({
-                        series: [{ data: old_data_Connectors }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_GossipRetransmission = [];
+        //var old_data_GossipRetransmission = [];
 
         function ef_GossipRetransmission() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_GossipRetransmission',
+                url: 'http://120.53.88.243:5001/ef_GossipRetransmission',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     GossipRetransmission_chart.setOption(data);
-                    old_data_GossipRetransmission = GossipRetransmission_chart.getOption().series[0].data;
+                    //old_data_GossipRetransmission = GossipRetransmission_chart.getOption().series[0].data;
                 }
             });
         }
@@ -295,27 +345,27 @@
         function ef_GossipRetransmission_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_GossipRetransmission_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_GossipRetransmission_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_GossipRetransmission.push([result.x_data, result.y_data]);
+                    //old_data_GossipRetransmission.push([result.x_data, result.y_data]);
                     GossipRetransmission_chart.setOption({
-                        series: [{ data: old_data_GossipRetransmission }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_HeartbeatInterval = [];
+        //var old_data_HeartbeatInterval = [];
 
         function ef_HeartbeatInterval() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_HeartbeatInterval',
+                url: 'http://120.53.88.243:5001/ef_HeartbeatInterval',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     HeartbeatInterval_chart.setOption(data);
-                    old_data_HeartbeatInterval = HeartbeatInterval_chart.getOption().series[0].data;
+                    //old_data_HeartbeatInterval = HeartbeatInterval_chart.getOption().series[0].data;
                 }
             });
         }
@@ -323,27 +373,27 @@
         function ef_HeartbeatInterval_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_HeartbeatInterval_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_HeartbeatInterval_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_HeartbeatInterval.push([result.x_data, result.y_data]);
+                    //old_data_HeartbeatInterval.push([result.x_data, result.y_data]);
                     HeartbeatInterval_chart.setOption({
-                        series: [{ data: old_data_HeartbeatInterval }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_MaxPeerCountAllow = [];
+        //var old_data_MaxPeerCountAllow = [];
 
         function ef_MaxPeerCountAllow() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_MaxPeerCountAllow',
+                url: 'http://120.53.88.243:5001/ef_MaxPeerCountAllow',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     MaxPeerCountAllow_chart.setOption(data);
-                    old_data_MaxPeerCountAllow = MaxPeerCountAllow_chart.getOption().series[0].data;
+                    //old_data_MaxPeerCountAllow = MaxPeerCountAllow_chart.getOption().series[0].data;
                 }
             });
         }
@@ -351,27 +401,27 @@
         function ef_MaxPeerCountAllow_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_MaxPeerCountAllow_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_MaxPeerCountAllow_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_MaxPeerCountAllow.push([result.x_data, result.y_data]);
+                    //old_data_MaxPeerCountAllow.push([result.x_data, result.y_data]);
                     MaxPeerCountAllow_chart.setOption({
-                        series: [{ data: old_data_MaxPeerCountAllow }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_OpportunisticGraftPeers = [];
+        //var old_data_OpportunisticGraftPeers = [];
 
         function ef_OpportunisticGraftPeers() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_OpportunisticGraftPeers',
+                url: 'http://120.53.88.243:5001/ef_OpportunisticGraftPeers',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     OpportunisticGraftPeers_chart.setOption(data);
-                    old_data_OpportunisticGraftPeers = OpportunisticGraftPeers_chart.getOption().series[0].data;
+                    //old_data_OpportunisticGraftPeers = OpportunisticGraftPeers_chart.getOption().series[0].data;
                 }
             });
         }
@@ -379,27 +429,27 @@
         function ef_OpportunisticGraftPeers_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_OpportunisticGraftPeers_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_OpportunisticGraftPeers_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_OpportunisticGraftPeers.push([result.x_data, result.y_data]);
+                    //old_data_OpportunisticGraftPeers.push([result.x_data, result.y_data]);
                     OpportunisticGraftPeers_chart.setOption({
-                        series: [{ data: old_data_OpportunisticGraftPeers }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_TBFT_propose_delta_timeout = [];
+        //var old_data_TBFT_propose_delta_timeout = [];
 
         function ef_TBFT_propose_delta_timeout() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_TBFT_propose_delta_timeout',
+                url: 'http://120.53.88.243:5001/ef_TBFT_propose_delta_timeout',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     TBFT_propose_delta_timeout_chart.setOption(data);
-                    old_data_TBFT_propose_delta_timeout = TBFT_propose_delta_timeout_chart.getOption().series[0].data;
+                    //old_data_TBFT_propose_delta_timeout = TBFT_propose_delta_timeout_chart.getOption().series[0].data;
                 }
             });
         }
@@ -407,27 +457,27 @@
         function ef_TBFT_propose_delta_timeout_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_TBFT_propose_delta_timeout_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_TBFT_propose_delta_timeout_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_TBFT_propose_delta_timeout.push([result.x_data, result.y_data]);
+                    //old_data_TBFT_propose_delta_timeout.push([result.x_data, result.y_data]);
                     TBFT_propose_delta_timeout_chart.setOption({
-                        series: [{ data: old_data_TBFT_propose_delta_timeout }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_TBFT_propose_timeout = [];
+        //var old_data_TBFT_propose_timeout = [];
 
         function ef_TBFT_propose_timeout() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_TBFT_propose_timeout',
+                url: 'http://120.53.88.243:5001/ef_TBFT_propose_timeout',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     TBFT_propose_timeout_chart.setOption(data);
-                    old_data_TBFT_propose_timeout = TBFT_propose_timeout_chart.getOption().series[0].data;
+                    //old_data_TBFT_propose_timeout = TBFT_propose_timeout_chart.getOption().series[0].data;
                 }
             });
         }
@@ -435,27 +485,27 @@
         function ef_TBFT_propose_timeout_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_TBFT_propose_timeout_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_TBFT_propose_timeout_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_TBFT_propose_timeout.push([result.x_data, result.y_data]);
+                    //old_data_TBFT_propose_timeout.push([result.x_data, result.y_data]);
                     TBFT_propose_timeout_chart.setOption({
-                        series: [{ data: old_data_TBFT_propose_timeout }]
+                        series: [{ data: result.data }]
                     });
                 }
             });
         }
 
-        var old_data_block_tx_capacity = [];
+        //var old_data_block_tx_capacity = [];
 
         function ef_block_tx_capacity() {
             $.ajax({
-                url: 'http://127.0.0.1:5000/ef_block_tx_capacity',
+                url: 'http://120.53.88.243:5001/ef_block_tx_capacity',
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
                     block_tx_capacity_chart.setOption(data);
-                    old_data_block_tx_capacity = block_tx_capacity_chart.getOption().series[0].data;
+                    //old_data_block_tx_capacity = block_tx_capacity_chart.getOption().series[0].data;
                 }
             });
         }
@@ -463,12 +513,12 @@
         function ef_block_tx_capacity_dynamicdata() {
             $.ajax({
                 type: "GET",
-                url: "http://127.0.0.1:5000/ef_block_tx_capacity_dynamicdata",
+                url: "http://120.53.88.243:5001/ef_block_tx_capacity_dynamicdata",
                 dataType: "json",
                 success: function (result) {
-                    old_data_block_tx_capacity.push([result.x_data, result.y_data]);
+                    //old_data_block_tx_capacity.push([result.x_data, result.y_data]);
                     block_tx_capacity_chart.setOption({
-                        series: [{ data: old_data_block_tx_capacity }]
+                        series: [{ data: result.data }]
                     });
                 }
             });

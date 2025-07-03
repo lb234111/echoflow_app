@@ -62,6 +62,8 @@ class  DoPOWEvent:
 
     @classmethod
     def recv_tx(cls, event):
+        if event.node_id >= len(Network.node):
+            print(f"Debug: event.node_id = {event.node_id}, Network.node length = {len(Network.node)}")
         node = Network.node[event.node_id]
         if event.tx_id in node.tx_pool or event.tx_id in node.tx_done_pool:
             return
@@ -99,6 +101,8 @@ class  DoPOWEvent:
 
     @classmethod
     def recv_message(cls, event):
+        if event.node_id >= len(Network.node):
+            print(f"Debug: event.node_id = {event.node_id}, Network.node length = {len(Network.node)}")
         node = Network.node[event.node_id]
         miner = Network.node[event.sender]
         receiver = Network.gen_recv(node.id, event)

@@ -3,10 +3,10 @@
     "tx_pool_size": 10000,
     "node_num": 5,
     "network_flag": 0,
-    "bandwidth": 2621440,
+    "bandwidth": 10485760,
     "tx_flag": 0,
-    "tx_num": 1000,
-    "tx_rate": 2000,
+    "tx_num": 2000,
+    "tx_rate": 1000,
     "random_topology_flag": 1,
     "network_topology": [
         [
@@ -30,11 +30,11 @@
             2
         ]
     ],
-    "protocol": "gossip",
+    "protocol": "kad",
     "fan_out": 3,
     "heartbeat_interval": 100,
     "bucket_size": 3,
-    "block_size_limit": 51200,
+    "block_size_limit": 512000,
     "hash_sig_size": 64,
     "start_time": 0.5,
     "over_time": 5,

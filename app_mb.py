@@ -67,7 +67,7 @@ def line_base(line_name,v,n):
             label_opts=opts.LabelOpts(is_show=False),
             linestyle_opts=opts.LineStyleOpts(
                 color="#32CD32",  # 设置折线颜色为绿色
-                width=1        
+                width=2        
             )
         )
     )
@@ -93,7 +93,10 @@ def line_cor_base(rate,x_name,line_name1, line_name2, v1, v2, n):
         .add_yaxis(series_name=line_name1,
                    y_axis=v1,
                    is_smooth=True, 
-                   linestyle_opts=opts.LineStyleOpts(width=3), 
+                   linestyle_opts=opts.LineStyleOpts(color="#FFA500", width=3), 
+                   symbol="circle",
+                   symbol_size=6,
+                   itemstyle_opts=opts.ItemStyleOpts(color="#FFA500"),
                 #    markpoint_opts=opts.MarkPointOpts(data=[opts.MarkPointItem(type_="min"),opts.MarkPointItem(type_="max")]),
                    )
         .add_yaxis(series_name=line_name2,
@@ -101,13 +104,14 @@ def line_cor_base(rate,x_name,line_name1, line_name2, v1, v2, n):
                    is_smooth=False,
                    linestyle_opts=opts.LineStyleOpts(opacity=0), 
                    symbol="circle",
-                   symbol_size=10,
+                   symbol_size=6,
+                   itemstyle_opts=opts.ItemStyleOpts(color="#FF0000"),
                    )
         .add_yaxis(series_name=line_name2,
                    y_axis=fitted_values,
                    is_smooth=True,
                    symbol_size=0,
-                   linestyle_opts=opts.LineStyleOpts(width=3), 
+                   linestyle_opts=opts.LineStyleOpts(color="#FF0000", width=3, type_="dashed"), 
                    )
         .set_global_opts(
                         title_opts=opts.TitleOpts(
@@ -120,7 +124,7 @@ def line_cor_base(rate,x_name,line_name1, line_name2, v1, v2, n):
                          textstyle_opts=opts.TextStyleOpts(font_size=16)
                         ),
                          xaxis_opts=(opts.AxisOpts(type_="value",name=x_name,name_location='center',min_='dataMin',name_gap=25,name_textstyle_opts=opts.TextStyleOpts(font_size=26),axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#FFFFFF", width=3)))),
-                         yaxis_opts=(opts.AxisOpts(type_="value",min_='dataMin',axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#FFFFFF", width=3)))))
+                         yaxis_opts=(opts.AxisOpts(type_="value",min_='dataMin',name="Tps(tx/s)",name_gap=15,name_textstyle_opts=opts.TextStyleOpts(font_size=23),axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#FFFFFF", width=3)))))
         .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
     )
     return line
@@ -141,7 +145,7 @@ def mb_run():
     idx_l.append(idx)   
     tps_line = line_base('Tps(tx/s)',tps_l,idx_l)
     lat_line = line_base('Latency',lat_l,idx_l)
-    avg_line = line_base('AvgLatency(单位:s)',avg_l,idx_l)
+    avg_line = line_base('平均时延(单位:s)',avg_l,idx_l)
     response = {
             "tps": tps_line.dump_options_with_quotes(),
             "lat": lat_line.dump_options_with_quotes(),
@@ -178,7 +182,7 @@ def update3():
     tx_num = request.form.get('tx_num')
     data = read_json()
     data['node_num'] = int(node_num)  # 修改JSON文件中的内容
-    data['bandwidth'] = int(bandwidth)  
+    data['bandwidth'] = int(bandwidth)*1024*1024  
     data['tx_pool_size'] = int(tx_pool_size)
     #data['tx_rate'] = int(tx_rate)
     data['block_size_limit'] = int(block_size)*data['tx_size']
@@ -219,9 +223,9 @@ def mb_cor2():
     if idx_c2 == 0:
         x_arr2, sim_arr2, real_arr2, rate2 =  cal_accuracy_bandwidth()
     if idx_c2 >= len(x_arr2)-1:
-        reward_l = line_cor_base("平均准确率"+str(round(rate2*100,2))+"%","带宽大小","sim_tps","real_tps",sim_arr2,real_arr2,x_arr2)
+        reward_l = line_cor_base("平均误差为"+str(round(100-rate2*100,2))+"%","带宽大小","sim_tps","real_tps",sim_arr2,real_arr2,x_arr2)
     else:
-        reward_l = line_cor_base("平均准确率"+str(round(rate2*100,2))+"%","带宽大小","sim_tps","real_tps",sim_arr2[:idx_c2],real_arr2[:idx_c2],x_arr2[:idx_c2])
+        reward_l = line_cor_base("平均误差为"+str(round(100-rate2*100,2))+"%","带宽大小","sim_tps","real_tps",sim_arr2[:idx_c2],real_arr2[:idx_c2],x_arr2[:idx_c2])
         idx_c2 += 1 
     return reward_l.dump_options_with_quotes()
 

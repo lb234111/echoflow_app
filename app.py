@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask_cors import CORS
 import pandas as pd
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line, Grid, Pie, Tab
@@ -12,6 +13,8 @@ import app2 as a2
 
 app = Flask(__name__, template_folder="templates",static_folder="resource")
 app.register_blueprint(a2.bp)
+CORS(app)
+
 
 # 强化学习
 import app_rl as a_rl
@@ -111,11 +114,5 @@ def memory_use_rate_dynamicdata():
 
 
 
-
-
-
-
-
-
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)

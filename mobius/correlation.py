@@ -154,11 +154,11 @@ def cal_accuracy_bandwidth():
         x.append(i)
 
     #选择读取当前路径下的指定文件获取两组数据，并对这两组数据进行相关性分析
-    with open('./data/SIM_BANDWIDTH.json', 'r', encoding='utf-8') as fp1:
+    with open('./mobius/data/SIM_BANDWIDTH.json', 'r', encoding='utf-8') as fp1:
         sim_data = json.load(fp1)
         # sim_data = sim_data[:]
         fp1.close()
-    with open('./data/REAL_BANDWIDTH.json', 'r', encoding='utf-8') as fp2:
+    with open('./mobius/data/REAL_BANDWIDTH.json', 'r', encoding='utf-8') as fp2:
         real_data = fp2.read()
         real_data = re.sub(r'\t|\n','',real_data)
         real_data = real_data.split("}")

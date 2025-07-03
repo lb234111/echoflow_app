@@ -7,29 +7,43 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
 
-    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
     <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
 
 
     <title>中继分片扩展展示</title>
     <style>
        body {
-            background-image: url('/resource/img/bg2.jpg')!important;
+            background-image: url('/resource/img/bg3.png')!important;
             background-size: cover; /* 背景图覆盖整个页面 */
             background-position: center center; /* 背景图居中 */
             background-repeat: no-repeat; /* 防止背景图重复 */
         } 
         h1 {
-            font-size: 40px; /* 调整字体大小 */
+            font-size: 3vh; /* 调整字体大小 */
             color: #00BFFF; /* 设置字体颜色 */
             text-align: center; /* 使文字居中 */
-            margin-top: 13px; /* 上边距，可根据需要调整 */
+            margin-top: 1vh; /* 上边距，可根据需要调整 */
         }
+        #mitosis_metric5 {
+            background-image: url('/resource/img/ms2.png'); /* 替换为你的图片路径 */
+            background-size: 70%;
+            background-position: center; 
+            background-repeat: no-repeat; 
+        }
+        #mitosis_metric6 {
+            background-image: url('/resource/img/ms4.png'); /* 替换为你的图片路径 */
+            background-size: 90%; /* 让图片填充整个 div */
+            background-position: center; /* 居中对齐 */
+            background-repeat: no-repeat; /* 防止图片重复 */
+        }
+
     </style>
 </head>
 
 <body>
-    <h1>中继分片系统</h1>
+    <h1>动态多中继分片架构</h1>
     <div class="mitosis_content">
         <div class="mitosis_div1" id="mitosis_metric1" style="display: flex; justify-content: center; align-items: center; font-size: 24px; color:#FFFFFF;">
             加载中...
@@ -40,22 +54,25 @@
             加载中...
         </div>
         <div class="mitosis_div5" id="mitosis_metric5" > 
-            <label for="zoom" style="font-weight: bold; color:#FFFFFF;">分片拓扑图</label>
+            <label for="zoom" style="font-weight: bold; color:#FFFFFF;"></label>
             <!-- <input type="range" id="zoom1" min="0" max="200" step="1" value="0">
             <input type="range" id="zoom2" min="0" max="600" step="1" value="0"> -->
             
             <!-- <input type="range" id="size" min="400" max="1000" step="10" value="400"> -->
         </div>
+        <div class="mitosis_div6" id="mitosis_metric6" > 
+            <label for="zoom" style="font-weight: bold; color:#FFFFFF;"></label>
+        </div>
     </div>
 
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('mitosis_metric5');
-            const imageUrl = 'http://127.0.0.1:5000/show_image'; // 从模板获取图片URL
-            container.style.backgroundImage = `url(${imageUrl})`;
-        });
-        const container = document.getElementById('mitosis_metric5');
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const container = document.getElementById('mitosis_metric5');
+        //     const imageUrl = 'http://http://120.53.88.243:5001/show_image'; // 从模板获取图片URL
+        //     container.style.backgroundImage = `url(${imageUrl})`;
+        // });
+        // const container = document.getElementById('mitosis_metric5');
         
         // const zoomInput1 = document.getElementById('zoom1');
         // const zoomInput2 = document.getElementById('zoom2');
@@ -77,14 +94,45 @@
         //         container.style.backgroundSize = `${currentL}+px ${currentSize}px`; 
         // });
 
-        fetch('/ms_heatmap')
-            .then(response => response.json())
-            .then(option => {
-                var chartDom = document.getElementById('mitosis_metric2');
-                var myChart = echarts.init(chartDom);
-                myChart.setOption(option);
-            })
-            .catch(error => console.error('Error fetching heatmap data:', error));
+        // fetch('/ms_heatmap')
+        //     .then(response => response.json())
+        //     .then(option => {
+        //         var chartDom = document.getElementById('mitosis_metric2');
+        //         var myChart = echarts.init(chartDom);
+        //         myChart.setOption(option);
+        //     })
+        //     .catch(error => console.error('Error fetching heatmap data:', error));
+
+        function fetchHeatmapAndBar() {
+            fetch('/ms_heatmap')
+                    .then(response => response.json())
+                    .then(option => {
+                        var chartDom = document.getElementById('mitosis_metric2');
+                        var myChart = echarts.init(chartDom);
+                        myChart.setOption(option);
+                    })
+                    .catch(error => console.error('Error fetching heatmap data:', error));
+            fetch('/ms_bar1')  
+                .then(response => response.json())
+                .then(option => {
+                    var chartDom = document.getElementById('mitosis_metric3');
+                    var myChart = echarts.init(chartDom);
+                    myChart.setOption(option);
+                })
+                .catch(error => console.error('Error fetching bar chart data:', error));
+            fetch('/ms_bar2')  
+                .then(response => response.json())
+                .then(option => {
+                    var chartDom = document.getElementById('mitosis_metric4');
+                    var myChart = echarts.init(chartDom);
+                    myChart.setOption(option);
+                })
+                .catch(error => console.error('Error fetching bar chart data:', error));
+            }
+
+        fetchHeatmapAndBar();
+        setInterval(fetchHeatmapAndBar, 3000);
+
 
         fetch('/ms_heatmap2')
             .then(response => response.json())
@@ -95,23 +143,7 @@
             })
             .catch(error => console.error('Error fetching heatmap data:', error));
 
-        fetch('/ms_bar1')  
-            .then(response => response.json())
-            .then(option => {
-                var chartDom = document.getElementById('mitosis_metric3');
-                var myChart = echarts.init(chartDom);
-                myChart.setOption(option);
-            })
-            .catch(error => console.error('Error fetching bar chart data:', error));
-
-        fetch('/ms_bar2')  
-            .then(response => response.json())
-            .then(option => {
-                var chartDom = document.getElementById('mitosis_metric4');
-                var myChart = echarts.init(chartDom);
-                myChart.setOption(option);
-            })
-            .catch(error => console.error('Error fetching bar chart data:', error));
+        
     </script>
 
 </body>
